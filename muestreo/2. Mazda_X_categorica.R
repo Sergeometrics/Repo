@@ -1,5 +1,5 @@
 library(readxl)
-mazda2021 <- read_excel("~/Dropbox/0. UNAL/Actividades realizadas/Clases/UNAL 2026-02/Análisis de regresión/datos/mazda2021.xlsx")
+mazda2021 <- read_excel("Muestreo/mazda2021.xlsx")
 
 library(ggplot2)
 
