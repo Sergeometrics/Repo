@@ -231,3 +231,5 @@ df <- tibble(
 )
 
 df
+
+dt<-rnorm(100,10,2)
