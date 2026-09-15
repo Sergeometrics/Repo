@@ -213,3 +213,21 @@ gamma<-rgamma(100,100,1)
 plot(density(gamma))
 
 
+library(tidyverse)
+
+set.seed(2026)
+
+df <- tibble(
+  fecha = seq.Date(from = as.Date("2025-01-01"), by = "day", length.out = 60),
+  region = sample(c("Norte", "Sur", "Centro", "Este", "Oeste"), 60, replace = TRUE),
+  categoria = sample(c("Tecnología", "Hogar", "Salud", "Moda", "Deportes"), 60, replace = TRUE),
+  edad = sample(18:68, 60, replace = TRUE),
+  ingreso_mensual = round(rnorm(60, mean = 3200, sd = 900), 0),
+  compras_mes = sample(0:9, 60, replace = TRUE),
+  gasto_total = round(ingreso_mensual * (0.08 + compras_mes * 0.045) + rnorm(60, mean = 0, sd = 180), 0),
+  cliente_frecuente = if_else(compras_mes >= 5 & region %in% c("Norte", "Centro"), TRUE, FALSE),
+  score_satisfaccion = sample(1:5, 60, replace = TRUE),
+  canal = sample(c("Web", "App", "Tiendas", "WhatsApp"), 60, replace = TRUE)
+)
+
+df
