@@ -231,5 +231,21 @@ df <- tibble(
 )
 
 df
+set.seed(8)
+x<-rnorm(100,10,2)
+y<-rnorm(100,10,2)
+ 
+shapiro.test(x)
+shapiro.test(y)
 
-dt<-rnorm(100,10,2)
+minx<-numeric(1000)
+miny<-numeric(1000)
+for(i in 1:1000){
+  set.seed(i)
+  x<-rnorm(100,10,2)
+  y<-rnorm(100,10,2)
+  minx[i]<-min(x)
+  miny[i]<-min(y)
+}
+hist(minx)
+hist(miny)

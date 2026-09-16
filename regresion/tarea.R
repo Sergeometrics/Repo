@@ -21,33 +21,32 @@ sigmasqrd_est<-sum(model$residuals^2)/(length(model$residuals))
 
 var_model-sigmasqrd_est
 
+n <- 100
 
+# Varianza true
+sigma2_true <- sum(model$residuals^2) / (length(model$residuals) - 2)
 
-
-
-
+set.seed(2026)
 
 diffs <- numeric(1000)
 
 for (i in 1:1000) {
-  # Crear dataset con dos variables aleatorias
   set.seed(i)
-  datos_sim <- data.frame(
-    x = rnorm(nrow(mazda)),
-    y = rnorm(nrow(mazda))
-  )
-  
-  # Crear modelo lineal
-  modelo_sim <- lm(y ~ x, data = datos_sim)
-  
-  # Calcular varianza estimada (sigma al cuadrado)
-  var_estimada_sesgada <- sum(modelo_sim$residuals^2) / (length(modelo_sim$residuals) )
-  
-  # Varianza real
-  var_real <- var(datos_sim$y)
-  
-  # Guardar la diferencia
-  diffs[i] <- var_estimada_sesgada - var_real
+  idx <- sample(seq_len(nrow(mazda)), size = n, replace = FALSE)
+  muestra <- mazda[idx, c("precio", "km")]
+
+  modelo_sim <- lm(precio ~ km, data = muestra)
+
+  # Estimador sesgado:
+  var_sesgada <- sum(residuals(modelo_sim)^2) / n
+
+  # Guardar la diferencia entre estimador sesgado y  true
+  diffs[i] <- var_sesgada - sigma2_true
 }
-sesgo<-length(datos_sim$y)-2/length(datos_sim$y)
-mean(diffs)
+
+sesgo <- mean(diffs)
+
+# Sesgo teórico para comparación 
+sesgo_teorico <- - (2 / n) * sigma2_true
+diffs
+c(sesgo= sesgo , "sesgo teorico"= sesgo_teorico)
