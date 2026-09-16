@@ -249,3 +249,6 @@ for(i in 1:1000){
 }
 hist(minx)
 hist(miny)
+
+shapiro.test(minx)
+shapiro.test(miny)

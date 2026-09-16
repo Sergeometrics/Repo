@@ -46,7 +46,7 @@ for (i in 1:1000) {
 
 sesgo <- mean(diffs)
 
-# Sesgo teórico para comparación 
+# Sesgo teorico para comparación 
 sesgo_teorico <- - (2 / n) * sigma2_true
 diffs
 c(sesgo= sesgo , "sesgo teorico"= sesgo_teorico)
