@@ -1,0 +1,101 @@
+# Tarea regresion 
+(hechar parla) (pls alguien llenelo q tengo pereza)
+
+## Datos y modelo base de la estimación
+
+se usan los datos y modelo que se han venido trabajando durante clase, las variables precio y Km de la base de datos
+
+```{r}
+
+#Datos 
+mazda<-readxl::read_xlsx(path = "mazda2021.xlsx") #adaptar ruta en caso de ser necesario
+
+
+#Modelo y varianza poblacional 
+model<- lm(data= mazda, precio ~ km)
+summary(model) 
+
+ #varianza poblacional 
+sigmasqrd_est<-sum(model$residuals^2)/(length(model$residuals))
+```
+
+
+De igual manera iniciamos objetos que van a ser necesarias a lo largo de la simulacion
+
+```{r}
+
+diffs <- numeric(1000) #Diferencias entre varianza sesgada y varianza insesgada
+var_sesgada <- numeric(1000) 
+sigma2_insesgada <- numeric(1000)
+```
+
+
+ Calculamos la varianza real del modelo (se usará para el calculo del sesgo teórico)
+
+```{r}
+
+# Varianza true
+sigma2_true <- sum(model$residuals^2) / (length(model$residuals) - 2)
+```
+
+
+## Generacion de las 1000 simulaciones 
+
+Usando un "for" se repite mil veces un bucle que llena el dato "i" de los 3 objetos definidos anteriormente (diffs, var_sesgada, sigma2_insesgada), cada iteracion toma una muestra y guarda los datos de la varianza en los objetos.
+
+```{r}
+
+for (i in 1:1000) {
+  set.seed(i)
+  idx <- sample(seq_len(nrow(mazda)), size = 100, replace = FALSE)
+  muestra <- mazda[idx, c("precio", "km")]
+
+  modelo_sim <- lm(precio ~ km, data = muestra)
+
+  # Estimador sesgado:
+  var_sesgada[i] <- sum(residuals(modelo_sim)^2) / 100
+
+
+# Varianza de la muestra insesgada 
+sigma2_insesgada[i] <- sum(modelo_sim$residuals^2) / (length(modelo_sim$residuals) - 2)
+
+
+  # Guardar la diferencia entre estimador sesgado y  true
+  diffs[i] <- var_sesgada[i] - sigma2_insesgada[i]
+
+}
+```
+
+
+## Comparacion del sesgo simulado VS sesgo teorico 
+
+Debido al tamaño de los numeros tomados en estas simulaciones (la varianza se encuentra en millones de pesos cuadrados) se compararan los sesgos como un cociente, no como la diferencia, con el objetivo de dar una interpretacion mas clara.
+
+Preparamos el sesgo teórico y el promedio de nuestras simulaciones
+ 
+
+```{r}
+
+#sesgo promedio de las simulaciones
+sesgo_prom <- mean(diffs)
+
+# Sesgo teorico para comparación 
+sesgo_teorico <- - (2 / 100) * sigma2_true
+head(diffs)
+c(sesgo= sesgo_prom , "sesgo teorico"= sesgo_teorico)
+```
+
+
+Realizando el cociente obtenemos:
+
+```{r}
+sesgo_prom / sesgo_teorico 
+```
+
+La salida indica un cociente del 0.9997367
+
+
+## concluciones
+
+
+(Estoy mamamdo c: ayudenme ahi con esta parte :3)

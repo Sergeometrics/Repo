@@ -50,6 +50,7 @@ sigma2_insesgada[i] <- sum(modelo_sim$residuals^2) / (length(modelo_sim$residual
 
 }
 
+#sesgo promedio de las simulaciones
 sesgo_prom <- mean(diffs)
 
 # Sesgo teorico para comparación 
