@@ -1,9 +1,16 @@
-# Tarea regresion 
-(hechar parla) (pls alguien llenelo q tengo pereza)
+# Tarea regresión
+
+Ana Lucía Acosta Moreno
+
+Sergio Buitrago Melo
+
+David Camero Pardo
+
+Camilo Andrés Murcia Perdomo
 
 ## Datos y modelo base de la estimación
 
-se usan los datos y modelo que se han venido trabajando durante clase, las variables precio y Km de la base de datos
+Se usan los datos y el modelo que se han venido trabajando durante la clase: las variables `precio` y `km` de la base de datos "mazda2021".
 
 ```{r}
 
@@ -19,8 +26,7 @@ summary(model)
 sigmasqrd_est<-sum(model$residuals^2)/(length(model$residuals))
 ```
 
-
-De igual manera iniciamos objetos que van a ser necesarias a lo largo de la simulacion
+De igual manera, iniciamos objetos que serán necesarios a lo largo de la simulación.
 
 ```{r}
 
@@ -29,8 +35,7 @@ var_sesgada <- numeric(1000)
 sigma2_insesgada <- numeric(1000)
 ```
 
-
- Calculamos la varianza real del modelo (se usará para el calculo del sesgo teórico)
+Calculamos la varianza real del modelo (se usará para el cálculo del sesgo teórico).
 
 ```{r}
 
@@ -38,10 +43,9 @@ sigma2_insesgada <- numeric(1000)
 sigma2_true <- sum(model$residuals^2) / (length(model$residuals) - 2)
 ```
 
+## Generación de las 1000 simulaciones y cálculo del "sesgo simulado"
 
-## Generacion de las 1000 simulaciones 
-
-Usando un "for" se repite mil veces un bucle que llena el dato "i" de los 3 objetos definidos anteriormente (diffs, var_sesgada, sigma2_insesgada), cada iteracion toma una muestra y guarda los datos de la varianza en los objetos.
+Usando un `for` se repite mil veces un bucle que llena el i-ésimo dato de los tres objetos definidos anteriormente (`diffs`, `var_sesgada`, `sigma2_insesgada`). Cada iteración toma una muestra y guarda las varianzas en esos objetos.
 
 ```{r}
 
@@ -66,13 +70,45 @@ sigma2_insesgada[i] <- sum(modelo_sim$residuals^2) / (length(modelo_sim$residual
 }
 ```
 
+## Cálculo de la fórmula del sesgo teórico:
 
-## Comparacion del sesgo simulado VS sesgo teorico 
+Partimos del estimador insesgado de la varianza de los errores:
 
-Debido al tamaño de los numeros tomados en estas simulaciones (la varianza se encuentra en millones de pesos cuadrados) se compararan los sesgos como un cociente, no como la diferencia, con el objetivo de dar una interpretacion mas clara.
+$$
+\hat{\sigma}^2_{insesgado} = \frac{RSS}{n - p} 
+$$
 
-Preparamos el sesgo teórico y el promedio de nuestras simulaciones
- 
+Por lo tanto, el valor esperado de RSS es
+
+$$ E[RSS] = (n - p)\sigma^2 $$
+
+Ahora, nuestro estimador sesgado es:
+
+$$ \hat{\sigma}^2_{sesgado} = \frac{RSS}{n} $$
+
+con valor esperado de:
+
+$$ E[\hat{\sigma}^2_{sesgado}] = E\left[\frac{RSS}{n}\right] = \frac{n - p}{n}\sigma^2 $$
+
+Es decir, podemos ver el sesgo como:
+
+$\text{Sesgo} = E[\hat{\theta}] - \theta$
+
+Esto, en nuestro caso, sería:
+
+$$ \text{Sesgo} = \frac{n - p}{n}\sigma^2 - \sigma^2 = \sigma^2 \left( \frac{n - p}{n} - 1 \right) = \sigma^2 \left( \frac{-p}{n} \right) = -\frac{p}{n}\sigma^2 $$
+
+Con $p=2$:
+
+$-\frac{2}{100}\sigma^2$
+
+Siendo este nuestro sesgo teórico a comparar.
+
+## Comparación del sesgo simulado VS sesgo teórico
+
+Debido al tamaño de los números tomados en estas simulaciones (la varianza se encuentra en millones de pesos cuadrados), se compararán los sesgos como un cociente, no como la diferencia, con el objetivo de dar una interpretación más clara.
+
+Preparamos el sesgo teórico y el promedio de nuestras simulaciones.
 
 ```{r}
 
@@ -80,11 +116,10 @@ Preparamos el sesgo teórico y el promedio de nuestras simulaciones
 sesgo_prom <- mean(diffs)
 
 # Sesgo teorico para comparación 
-sesgo_teorico <- - (2 / 100) * sigma2_true
+sesgo_teorico <- - (2 / 100) * sigma2_true #como fue calculado anteriormente
 head(diffs)
 c(sesgo= sesgo_prom , "sesgo teorico"= sesgo_teorico)
 ```
-
 
 Realizando el cociente obtenemos:
 
@@ -92,10 +127,8 @@ Realizando el cociente obtenemos:
 sesgo_prom / sesgo_teorico 
 ```
 
-La salida indica un cociente del 0.9997367
+La salida indica un cociente de 0.9997367.
 
+## Conclusiones
 
-## concluciones
-
-
-(Estoy mamamdo c: ayudenme ahi con esta parte :3)
+Dado que al realizar el cociente obtuvimos un valor muy cercano a 1, se puede concluir que la diferencia entre el sesgo simulado y el sesgo teórico es atribuible a la aleatoriedad de la muestra que se tomó.
