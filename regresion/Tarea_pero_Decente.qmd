@@ -1,12 +1,8 @@
 # Tarea regresión
 
-Ana Lucía Acosta Moreno
+En esta simulacion se usará la base de datos "mazda2021" para realizar una simulacion práctica de los estimadores de varianza vistos en clase y ver de manera orgánica el sesgo del estimador de mayor verosímilitud.
 
-Sergio Buitrago Melo
-
-David Camero Pardo
-
-Camilo Andrés Murcia Perdomo
+A continuación se explica el proceso computacional y matemático del calculo de los sesgos "simulados" y "teóricos" a partir de los estimadores de varianza.
 
 ## Datos y modelo base de la estimación
 
@@ -15,7 +11,8 @@ Se usan los datos y el modelo que se han venido trabajando durante la clase: las
 ```{r}
 
 #Datos 
-mazda<-readxl::read_xlsx(path = "mazda2021.xlsx") #adaptar ruta en caso de ser necesario
+#adaptar ruta en caso de ser necesario
+mazda<-readxl::read_xlsx(path = "mazda2021.xlsx") 
 
 
 #Modelo y varianza poblacional 
@@ -29,8 +26,8 @@ sigmasqrd_est<-sum(model$residuals^2)/(length(model$residuals))
 De igual manera, iniciamos objetos que serán necesarios a lo largo de la simulación.
 
 ```{r}
-
-diffs <- numeric(1000) #Diferencias entre varianza sesgada y varianza insesgada
+#Diferencias entre varianza sesgada y varianza insesgada
+diffs <- numeric(1000) 
 var_sesgada <- numeric(1000) 
 sigma2_insesgada <- numeric(1000)
 ```
@@ -61,7 +58,7 @@ for (i in 1:1000) {
 
 
 # Varianza de la muestra insesgada 
-sigma2_insesgada[i] <- sum(modelo_sim$residuals^2) / (length(modelo_sim$residuals) - 2)
+sigma2_insesgada[i] <- sum(modelo_sim$residuals^2) / 100 - 2
 
 
   # Guardar la diferencia entre estimador sesgado y  true
@@ -131,4 +128,6 @@ La salida indica un cociente de 0.9997367.
 
 ## Conclusiones
 
-Dado que al realizar el cociente obtuvimos un valor muy cercano a 1, se puede concluir que la diferencia entre el sesgo simulado y el sesgo teórico es atribuible a la aleatoriedad de la muestra que se tomó.
+Durante el proceso de comparacion se decidió el cambio de comparar los sesgos mostrando la diferencia a mostrar el cociente puesto que a pesar de que, a escala, la diferencia entre nuestros sesgos es bastante baja; entendimos que al tratarse de unidades tan grandes seria pertinente pivotar hacia el uso del cociente como metodo de comparacion de manera mas interpretable.
+
+Dado que al realizar el cociente obtuvimos un valor muy cercano a 1, se puede concluir que la diferencia entre el sesgo simulado y el sesgo teórico es atribuible a la aleatoriedad de la muestra que se tomó. Esto confirma de manera práctica el sesgo de nuestros estimadores vistos en clase. Así indicando una buena implementacion de un estimador insesgado como alternativa estadísticamente mas viable.
